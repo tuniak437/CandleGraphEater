@@ -1,0 +1,9 @@
+{
+    "blogURL": "https://crunchify.com",
+    "twitter": "https://twitter.com/Crunchify",
+    "social": {
+        "facebook": "http://facebook.com/Crunchify",
+        "pinterest": "https://www.pinterest.com/Crunchify/crunchify-articles",
+        "rss": "http://feeds.feedburner.com/Crunchify"
+    }
+}
