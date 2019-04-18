@@ -1,24 +1,23 @@
 package cz.tuniak;
 
 import org.json.JSONObject;
+import org.knowm.xchart.OHLCChart;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.TreeMap;
 
 public class IndexGraph {
 
     public static void main(String[] args) {
-//        OHLCChart chart = ChartHandler.createChart();
-//        UIHandler.createFrame(chart);
-    //    System.out.println("23 March 2019: $" + obj.getJSONObject("Time Series FX (Daily)").getJSONObject("2019-03-23").getString("1. open"));
         JSONObject jsonDataObject = JsonHandler.parseJson();
-
-        HashMap<Integer, HashMap<String, ArrayList<Double>>> data = loadData(jsonDataObject);
-        System.out.println(data);
+        HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
+        OHLCChart chart = ChartHandler.createChart(data);
+        UIHandler.createFrame(chart);
     }
     
-    public static HashMap<Integer, HashMap<String, ArrayList<Double>>> loadData(JSONObject jsonDataObject) {
+    public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
         DataHandler myHandler = new DataHandler();
         JSONObject timeSeries = jsonDataObject.getJSONObject("Time Series FX (Daily)");
         for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
