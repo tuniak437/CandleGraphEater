@@ -1,13 +1,13 @@
 package cz.tuniak;
 
+import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.XChartPanel;
-import org.knowm.xchart.XYChart;
 
 import javax.swing.*;
 import java.awt.*;
 
-class HandlerUI {
-    static void createFrame(XYChart chart) {
+class UIHandler {
+    static void createFrame(OHLCChart chart) {
 
         //creating and setting up window
         JFrame frame = new JFrame("Index Graph");
@@ -20,8 +20,8 @@ class HandlerUI {
         frame.add(chartPanel, BorderLayout.CENTER);
 
         //labeling window
-        JLabel label = new JLabel("Name of currency type will be here", SwingConstants.CENTER);
-        frame.add(label, BorderLayout.SOUTH);
+//        JLabel label = new JLabel("Name of currency type will be here", SwingConstants.CENTER);
+//        frame.add(label, BorderLayout.SOUTH);
 
         //displaying the window
         frame.pack();
