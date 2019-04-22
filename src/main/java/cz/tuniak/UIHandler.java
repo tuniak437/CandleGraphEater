@@ -20,8 +20,8 @@ class UIHandler {
         frame.add(chartPanel, BorderLayout.CENTER);
 
         //labeling window
-//        JLabel label = new JLabel("Name of currency type will be here", SwingConstants.CENTER);
-//        frame.add(label, BorderLayout.SOUTH);
+        JLabel label = new JLabel("My super fancy graph", SwingConstants.CENTER);
+        frame.add(label, BorderLayout.NORTH);
 
         //displaying the window
         frame.pack();

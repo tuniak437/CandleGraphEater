@@ -22,10 +22,8 @@ class JsonHandler {
             e.printStackTrace();
         }
 
-        //creates Json object
-        JSONObject jsonDataObject = new JSONObject(valueBuilder.toString());
-        //getting data from Json
-        return jsonDataObject;
+        //creates and returns Json object
+        return new JSONObject(valueBuilder.toString());
 
     }
 

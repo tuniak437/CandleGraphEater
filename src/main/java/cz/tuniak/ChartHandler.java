@@ -16,11 +16,12 @@ class ChartHandler {
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
         chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
 
+        //creates chart that contains four ArrayLists of values from certain month
         chart.addSeries("Eur/Usd",
-                new ArrayList<>(data.get(3).get("open").values()),
-                new ArrayList<>(data.get(3).get("high").values()),
-                new ArrayList<>(data.get(3).get("low").values()),
-                new ArrayList<>(data.get(3).get("close").values())
+                new ArrayList<>(data.get(4).get("open").values()),
+                new ArrayList<>(data.get(4).get("high").values()),
+                new ArrayList<>(data.get(4).get("low").values()),
+                new ArrayList<>(data.get(4).get("close").values())
         )
                 .setUpColor(Color.GREEN)
                 .setDownColor(Color.RED)
