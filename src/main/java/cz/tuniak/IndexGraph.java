@@ -1,7 +1,6 @@
 package cz.tuniak;
 
 import org.json.JSONObject;
-import org.knowm.xchart.OHLCChart;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -13,8 +12,8 @@ public class IndexGraph {
     public static void main(String[] args) {
         JSONObject jsonDataObject = JsonHandler.parseJson();
         HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
-        OHLCChart chart = ChartHandler.createChart(data);
-        UIHandler.createFrame(chart);
+        UIHandler.createFrame(data);
+
     }
     
     public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {

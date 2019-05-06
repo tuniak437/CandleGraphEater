@@ -11,17 +11,17 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 class ChartHandler {
-    static OHLCChart createChart(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+    static OHLCChart createChart(HashMap<String, TreeMap<LocalDate, Double>> month) {
         final OHLCChart chart = new OHLCChart(800, 600);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
         chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
 
         //creates chart that contains four ArrayLists of values from certain month
         chart.addSeries("Eur/Usd",
-                new ArrayList<>(data.get(4).get("open").values()),
-                new ArrayList<>(data.get(4).get("high").values()),
-                new ArrayList<>(data.get(4).get("low").values()),
-                new ArrayList<>(data.get(4).get("close").values())
+                new ArrayList<>(month.get("open").values()),
+                new ArrayList<>(month.get("high").values()),
+                new ArrayList<>(month.get("low").values()),
+                new ArrayList<>(month.get("close").values())
         )
                 .setUpColor(Color.GREEN)
                 .setDownColor(Color.RED)
