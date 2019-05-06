@@ -15,7 +15,7 @@ public class IndexGraph {
         UIHandler.createFrame(data);
 
     }
-    
+
     public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
         //creates new instance of DataHandler
         DataHandler myHandler = new DataHandler();
@@ -31,5 +31,5 @@ public class IndexGraph {
         //returns HashMap with every value from selected month
         return myHandler.months;
     }
-    
+
 }
