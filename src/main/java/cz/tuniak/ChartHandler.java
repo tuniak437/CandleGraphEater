@@ -5,36 +5,29 @@ import org.knowm.xchart.OHLCSeries;
 import org.knowm.xchart.style.Styler;
 
 import java.awt.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeMap;
 
 class ChartHandler {
+    //String = (open, high, low, close)
+    //LocalDate = full date in format "yyyy-MM-dd" || Double = values
     static OHLCChart createChart(HashMap<String, TreeMap<LocalDate, Double>> month) {
         final OHLCChart chart = new OHLCChart(800, 600);
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
         chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
         //creates chart that contains four ArrayLists of values from certain month
-        ArrayList xData = new ArrayList();
-        String pattern = "yyyy-MM-dd";
-        SimpleDateFormat format = new SimpleDateFormat(pattern);
-        month.forEach ((key, value) ->
-                value.forEach ((keys, values) -> {
-            try {
-                Date days = format.parse(keys.toString());
-                if (xData.contains(days)){
-                } else {
-                    xData.add(days);
-                }
-            }  catch (ParseException e) {
-                e.printStackTrace();
-            }
-        }));
-
+        ArrayList xData = new ArrayList(); // will fix later
+        month.get("open").forEach((keys, Double) -> {
+            //days counter
+//            YearMonth yearMonthObject = YearMonth.of(keys.getYear(), keys.getMonth());
+//            int daysInMonth = yearMonthObject.lengthOfMonth();
+            Date days = Date.from(keys.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                xData.add(days);
+        });
 
         chart.addSeries("Eur/Usd",
                 xData,
