@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public class IndexGraph {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         JSONObject jsonDataObject = JsonHandler.parseJson();
         HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
         UIHandler.createFrame(data);
