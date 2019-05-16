@@ -9,7 +9,7 @@ import java.util.TreeMap;
 
 public class IndexGraph {
 
-    public static void main(String[] args) throws Exception{
+    public static void main(String[] args) {
         JSONObject jsonDataObject = JsonHandler.parseJson();
         HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
         UIHandler.createFrame(data);
@@ -17,6 +17,8 @@ public class IndexGraph {
     }
 
     public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
+        //HashMap<YearMonth, ChartData>
+        //ChartData variables (private attributes)= days, open, high, low, close
         //creates new instance of DataHandler
         DataHandler myHandler = new DataHandler();
         //gets variable JSONObject timeSeries

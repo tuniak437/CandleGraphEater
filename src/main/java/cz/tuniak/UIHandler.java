@@ -6,6 +6,7 @@ import org.knowm.xchart.XChartPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.time.LocalDate;
+import java.time.Month;
 import java.util.HashMap;
 import java.util.TreeMap;
 
@@ -39,7 +40,8 @@ class UIHandler {
         data.forEach((key, value) -> {
                     OHLCChart chart = ChartHandler.createChart(value);
 //                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-                    tabbedPane.add(Month.getNameOfMonth(key), new XChartPanel(chart));
+
+                    tabbedPane.add(Month.of(key).toString(), new XChartPanel(chart));
         });
 
         return tabbedPane;
@@ -51,38 +53,5 @@ class UIHandler {
         frame.add(chartPanel, BorderLayout.CENTER);
 
         return chartPanel;
-    }
-
-    private enum Month {
-        JANUARY(1, "JANUARY"),
-        FEBRUARY(2, "FEBRUARY"),
-        MARCH(3, "MARCH"),
-        APRIL(4, "APRIL"),
-        MAY(5, "MAY"),
-        JUNE(6, "JUNE"),
-        JULY(7, "JULY"),
-        AUGUST(8, "AUGUST"),
-        SEPTEMBER(9, "SEPTEMBER"),
-        OCTOBER(10, "OCTOBER"),
-        NOVEMBER(11, "NOVEMBER"),
-        DECEMBER(12, "DECEMBER");
-
-        private final int numberOfMonth;
-        private final String nameOfMonth;
-
-        Month(int numberOfMonth, String nameOfMonth) {
-            this.numberOfMonth = numberOfMonth;
-            this.nameOfMonth = nameOfMonth;
-        }
-
-        public static String getNameOfMonth(int numberOfMonth) {
-            for (Month month: Month.values()) {
-
-                if (month.numberOfMonth == numberOfMonth) {
-                    return month.nameOfMonth;
-                }
-            }
-            throw new IllegalArgumentException("Month with number " + numberOfMonth + " does not exist.");
-        }
     }
 }

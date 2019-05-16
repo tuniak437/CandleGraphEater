@@ -20,11 +20,14 @@ class ChartHandler {
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
         chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
         //creates chart that contains four ArrayLists of values from certain month
+//        YearMonth yearMonthObject = YearMonth.of();
+//        int daysInMonth = yearMonthObject.lengthOfMonth();
         ArrayList xData = new ArrayList(); // will fix later
         month.get("open").forEach((keys, Double) -> {
             //days counter
 //            YearMonth yearMonthObject = YearMonth.of(keys.getYear(), keys.getMonth());
 //            int daysInMonth = yearMonthObject.lengthOfMonth();
+//            List<Integer> days = IntStream.rangeClosed(1, YearMonth.of(keys.getYear(), keys.));
             Date days = Date.from(keys.atStartOfDay(ZoneId.systemDefault()).toInstant());
                 xData.add(days);
         });
