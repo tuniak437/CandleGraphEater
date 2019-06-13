@@ -11,6 +11,7 @@ import java.util.TreeMap;
 class DataHandler {
     //Integer = number of month || String = (open, high, low, close)
     //LocalDate = full date in format "yyyy-MM-dd" || Double = values
+    //*new HashMap<YearMonth, ChartData>
     HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> months = new HashMap<>();
 
     /**

@@ -22,7 +22,7 @@ class ChartHandler {
         //creates chart that contains four ArrayLists of values from certain month
 //        YearMonth yearMonthObject = YearMonth.of();
 //        int daysInMonth = yearMonthObject.lengthOfMonth();
-        ArrayList xData = new ArrayList(); // will fix later
+        ArrayList xData = new ArrayList();
         month.get("open").forEach((keys, Double) -> {
             //days counter
 //            YearMonth yearMonthObject = YearMonth.of(keys.getYear(), keys.getMonth());
@@ -33,10 +33,15 @@ class ChartHandler {
         });
 
         chart.addSeries("Eur/Usd",
+                //ChartData.getDays()
                 xData,
+                //ChartData.getOpenValues()
                 new ArrayList<>(month.get("open").values()),
+                //ChartData.getHighValues()
                 new ArrayList<>(month.get("high").values()),
+                //ChartData.getLowValues()
                 new ArrayList<>(month.get("low").values()),
+                //ChartData.getCloseValues()
                 new ArrayList<>(month.get("close").values())
         )
                 .setUpColor(Color.GREEN)

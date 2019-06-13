@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.TreeMap;
 
 class UIHandler {
-    static JFrame createFrame(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+    static void createFrame(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
 
         //creating and setting up window
         JFrame frame = new JFrame("Index Graph");
@@ -19,7 +19,7 @@ class UIHandler {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //labeling window
-        JLabel label = new JLabel("My super fancy graph", SwingConstants.CENTER);
+        JLabel label = new JLabel("My fancy graph", SwingConstants.CENTER);
         frame.add(label, BorderLayout.NORTH);
 
         frame.add(buildMonthTabs(data), BorderLayout.CENTER);
@@ -30,10 +30,9 @@ class UIHandler {
         frame.pack();
         frame.setVisible(true);
 
-        return frame;
     }
-
-    static JTabbedPane buildMonthTabs(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+    //param HashMap<YearMonth, ChartData> data
+    private static JTabbedPane buildMonthTabs(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
@@ -45,13 +44,5 @@ class UIHandler {
         });
 
         return tabbedPane;
-    }
-    static JPanel createChart(JFrame frame, OHLCChart chart) {
-
-        //adding chart into window
-        JPanel chartPanel = new XChartPanel<>(chart);
-        frame.add(chartPanel, BorderLayout.CENTER);
-
-        return chartPanel;
     }
 }

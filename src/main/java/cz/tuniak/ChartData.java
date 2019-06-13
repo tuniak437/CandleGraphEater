@@ -4,25 +4,29 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 
 public class ChartData {
-    private ArrayList<YearMonth> yearMonths;
-    private ArrayList<Double> openValues;
-    private ArrayList<Double> highValues;
-    private ArrayList<Double> lowValues;
-    private ArrayList<Double> closeValues;
+    int days;
+    YearMonth yearMonth;
+    ArrayList<Double> openValues;
+    ArrayList<Double> highValues;
+    ArrayList<Double> lowValues;
+    ArrayList<Double> closeValues;
 
-    public ChartData(ArrayList<YearMonth> yearMonths) {
-        this.yearMonths = yearMonths;
-        this.openValues = openValues;
-        this.highValues = highValues;
-        this.lowValues = lowValues;
-        this.closeValues = closeValues;
+    public ChartData(YearMonth yearMonth) {
+        this.yearMonth = yearMonth;
+        this.days = yearMonth.lengthOfMonth();
     }
 
-    public ArrayList<YearMonth> getYearMonths() {
-        return yearMonths;
+    public ArrayList<Double> getDays() {
+        ArrayList<Double> days = new ArrayList<Double>();
+        for(int i=0; i < yearMonth.lengthOfMonth(); i++){
+            double o = (double) i+1;
+            days.add(o);
+        }
+        return days;
     }
 
     public ArrayList<Double> getOpenValues() {
+
         return openValues;
     }
 
