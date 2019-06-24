@@ -1,44 +1,72 @@
 package cz.tuniak;
 
-import java.time.YearMonth;
+import org.json.JSONObject;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
 
-public class ChartData {
-    int days;
-    YearMonth yearMonth;
-    ArrayList<Double> openValues;
-    ArrayList<Double> highValues;
-    ArrayList<Double> lowValues;
-    ArrayList<Double> closeValues;
+class ChartData {
+    private JSONObject jsonObject;
 
-    public ChartData(YearMonth yearMonth) {
-        this.yearMonth = yearMonth;
-        this.days = yearMonth.lengthOfMonth();
+    ChartData(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
     }
 
-    public ArrayList<Double> getDays() {
-        ArrayList<Double> days = new ArrayList<Double>();
-        for(int i=0; i < yearMonth.lengthOfMonth(); i++){
-            double o = (double) i+1;
-            days.add(o);
+    private ArrayList<LocalDate> sortDayValues() {
+        ArrayList<LocalDate> sortedDayValues = new ArrayList<>();
+        JSONObject timeSeries = this.jsonObject.getJSONObject("Time Series FX (Daily)");
+        for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
+            String date = it.next();
+            sortedDayValues.add(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
         }
+        Collections.sort(sortedDayValues);
+        return sortedDayValues;
+    }
+
+    ArrayList<Date> getDays() {
+        ArrayList<LocalDate> sortedDayValues = sortDayValues();
+        ArrayList<Date> days = new ArrayList<>();
+        for (LocalDate day : sortedDayValues) {
+            days.add(Date.from(day.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        }
+
         return days;
     }
 
-    public ArrayList<Double> getOpenValues() {
-
+    ArrayList<Double> getOpenValues() {
+        ArrayList<Double> openValues = new ArrayList<>();
+        for (LocalDate day : sortDayValues()) {
+            openValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("1. open"));
+        }
         return openValues;
     }
 
-    public ArrayList<Double> getHighValues() {
+    ArrayList<Double> getHighValues() {
+        ArrayList<Double> highValues = new ArrayList<>();
+        for (LocalDate day : sortDayValues()) {
+            highValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("2. high"));
+        }
         return highValues;
     }
 
-    public ArrayList<Double> getLowValues() {
+    ArrayList<Double> getLowValues() {
+        ArrayList<Double> lowValues = new ArrayList<>();
+        for (LocalDate day : sortDayValues()) {
+            lowValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("3. low"));
+        }
         return lowValues;
     }
 
-    public ArrayList<Double> getCloseValues() {
+    ArrayList<Double> getCloseValues() {
+        ArrayList<Double> closeValues = new ArrayList<>();
+        for (LocalDate day : sortDayValues()) {
+            closeValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("4. close"));
+        }
         return closeValues;
     }
 }

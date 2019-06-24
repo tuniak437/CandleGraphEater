@@ -1,56 +1,43 @@
 package cz.tuniak;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.json.JSONObject;
 import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.OHLCSeries;
 import org.knowm.xchart.style.Styler;
 
 import java.awt.*;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.TreeMap;
+import java.io.IOException;
 
-class ChartHandler {
-    //String = (open, high, low, close)
-    //LocalDate = full date in format "yyyy-MM-dd" || Double = values
-    static OHLCChart createChart(HashMap<String, TreeMap<LocalDate, Double>> month) {
-        final OHLCChart chart = new OHLCChart(800, 600);
-        chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
-        chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
-        //creates chart that contains four ArrayLists of values from certain month
-//        YearMonth yearMonthObject = YearMonth.of();
-//        int daysInMonth = yearMonthObject.lengthOfMonth();
-        ArrayList xData = new ArrayList();
-        month.get("open").forEach((keys, Double) -> {
-            //days counter
-//            YearMonth yearMonthObject = YearMonth.of(keys.getYear(), keys.getMonth());
-//            int daysInMonth = yearMonthObject.lengthOfMonth();
-//            List<Integer> days = IntStream.rangeClosed(1, YearMonth.of(keys.getYear(), keys.));
-            Date days = Date.from(keys.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                xData.add(days);
-        });
 
-        chart.addSeries("Eur/Usd",
-                //ChartData.getDays()
-                xData,
-                //ChartData.getOpenValues()
-                new ArrayList<>(month.get("open").values()),
-                //ChartData.getHighValues()
-                new ArrayList<>(month.get("high").values()),
-                //ChartData.getLowValues()
-                new ArrayList<>(month.get("low").values()),
-                //ChartData.getCloseValues()
-                new ArrayList<>(month.get("close").values())
+class ChartHandler{
+
+    private static final Logger log = LogManager.getLogger(ChartHandler.class.getName());
+
+        static OHLCChart createChart() {
+            final OHLCChart chart = new OHLCChart(800, 600);
+            chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
+            chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
+
+            JSONObject jsonDataObject = null;
+            try {
+                jsonDataObject = JsonHandler.parseJson();
+            } catch (IOException e) {
+                UIHandler.showMessage(UIHandler.createFrame(), "Something went wrong.");
+                log.error("ChartHandler.catch", e); // how could log look like
+            }
+            ChartData myChartData = new ChartData(jsonDataObject);
+            chart.addSeries("Eur/Usd",
+                myChartData.getDays(),
+                myChartData.getOpenValues(),
+                myChartData.getHighValues(),
+                myChartData.getLowValues(),
+                myChartData.getCloseValues()
         )
                 .setUpColor(Color.GREEN)
                 .setDownColor(Color.RED)
         ;
-//        .title("Area Chart")
-//                 .xAxisTitle("X")
-//                 .yAxisTitle("Y")
-//                 .build();
         return chart;
-    }
+        }
 }

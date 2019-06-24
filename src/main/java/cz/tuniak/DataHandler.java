@@ -3,10 +3,13 @@ package cz.tuniak;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+
+// Not needed anymore :((
 
 class DataHandler {
     //Integer = number of month || String = (open, high, low, close)
@@ -20,9 +23,10 @@ class DataHandler {
      * @param date       String representation of date. Always in format `YYYY-MM-DD`.
      * @param jsonCandle Double representation of candle values(open, high, low, close).
      */
-    public void addNewEntry(String date, JSONObject jsonCandle) {
+    void addNewEntry(String date, JSONObject jsonCandle) {
         //creates LocalDate variable from String date in format "yyyy-MM-dd"
         LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        YearMonth yearMonth = YearMonth.of(parsedDate.getYear(), parsedDate.getMonth());
 
         //adds another values to HashMap months if HashMap already has a number of month in it
         if (this.months.containsKey(parsedDate.getMonthValue())) {

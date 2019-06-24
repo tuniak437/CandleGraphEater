@@ -1,49 +1,47 @@
 package cz.tuniak;
 
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.TreeMap;
+import javax.swing.*;
 
 public class IndexGraph {
 
+//    private static final Logger log = LogManager.getLogger(IndexGraph.class.getName());
+
     public static void main(String[] args) {
-        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
-        Set<Thread> threadSet = Thread.getAllStackTraces().keySet();
-        System.out.println(threadSet);
-        new MyThread().start();
 
-        //global exception handler, define messages for every exception
-        JSONObject jsonDataObject;
-        try {
-            jsonDataObject = JsonHandler.parseJson();
-            HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
-            UIHandler.createFrame(data);
-        } catch (IOException e) {
-            System.out.println("ni!");
-        }
+        JFrame jFrame = UIHandler.createFrame();
+        UIHandler.addDataToFrame(jFrame);
+
+        // print log into console and .log file
+        // configure .properties so it makes sense
+//        log.debug("Debug message");
+//        log.info("Info log");
+//        log.error("Error message");
+
+//        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+//        Thread windowThread = new Thread(() ->
+//                 UIHandler.loadingSign());
+//                UIHandler.showMessage(UIHandler.createFrame(), "Loading...");
+//                JFrame load = UIHandler.loadingSign();
+//
+//        windowThread.start();
+        //create log file with exception messages
     }
 
-    private static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
-        //HashMap<YearMonth, ChartData>
-        //ChartData variables (private attributes)= days, open, high, low, close
+    // not needed anymore :((
 
-        //creates new instance of DataHandler
-        DataHandler myHandler = new DataHandler();
-        //gets variable JSONObject timeSeries
-        JSONObject timeSeries = jsonDataObject.getJSONObject("Time Series FX (Daily)");
-        //iterates through the whole file taking keys of timeSeries object saving it in a String date variable
-        for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
-            String date = it.next();
-
-            //uses String date variable to get open, high, low, close values from JSONObject timeSeries
-            myHandler.addNewEntry(date, timeSeries.getJSONObject(date));
-        }
-        //returns HashMap with every value from selected month
-        return myHandler.months;
-    }
+//    public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
+//        //creates new instance of DataHandler
+//        DataHandler myHandler = new DataHandler();
+//        //gets variable JSONObject timeSeries
+//        JSONObject timeSeries = jsonDataObject.getJSONObject("Time Series FX (Daily)");
+//        //iterates through the whole file taking keys of timeSeries object saving it in a String date variable
+//        for (Iterator<String> it = timeSeries.keys(); it.hasNext();) {
+//            String date = it.next();
+//
+//            //uses String date variable to get open, high, low, close values from JSONObject timeSeries
+//            myHandler.addNewEntry(date, timeSeries.getJSONObject(date));
+//        }
+//        //returns HashMap with every value from selected month
+//        return myHandler.months;
+//    }
 }
