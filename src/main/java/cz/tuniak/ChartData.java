@@ -11,11 +11,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 
-class ChartData {
+public class ChartData {
     private JSONObject jsonObject;
 
-    ChartData(JSONObject jsonObject) {
+    public ChartData(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public ChartData() {
     }
 
     private ArrayList<LocalDate> sortDayValues() {
@@ -29,7 +32,7 @@ class ChartData {
         return sortedDayValues;
     }
 
-    ArrayList<Date> getDays() {
+    public ArrayList<Date> getDays() {
         ArrayList<LocalDate> sortedDayValues = sortDayValues();
         ArrayList<Date> days = new ArrayList<>();
         for (LocalDate day : sortedDayValues) {
@@ -39,7 +42,7 @@ class ChartData {
         return days;
     }
 
-    ArrayList<Month> getMonths() {
+    public ArrayList<Month> getMonths() {
         ArrayList<Month> months = new ArrayList<>();
         for(LocalDate day : sortDayValues()) {
             if(!months.contains(day.getMonth())) {
@@ -49,7 +52,7 @@ class ChartData {
         return months;
     }
 
-    ArrayList<Double> getOpenValues() {
+    public ArrayList<Double> getOpenValues() {
         ArrayList<Double> openValues = new ArrayList<>();
         for (LocalDate day : sortDayValues()) {
             openValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("1. open"));
