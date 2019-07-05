@@ -3,6 +3,7 @@ package cz.tuniak;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -36,6 +37,16 @@ class ChartData {
         }
 
         return days;
+    }
+
+    ArrayList<Month> getMonths() {
+        ArrayList<Month> months = new ArrayList<>();
+        for(LocalDate day : sortDayValues()) {
+            if(!months.contains(day.getMonth())) {
+                months.add(day.getMonth());
+            }
+        }
+        return months;
     }
 
     ArrayList<Double> getOpenValues() {

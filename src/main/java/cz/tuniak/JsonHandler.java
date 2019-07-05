@@ -16,20 +16,24 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 class JsonHandler extends Exception{
-    //Logger jsonLogger = LoggerHandler.createLogger(); ?
-    static final Logger log = LogManager.getLogger(JsonHandler.class);
+    private static final Logger log = LogManager.getLogger(JsonHandler.class);
 
-    static JSONObject parseJson() throws MalformedURLException, JsonHandlerException {
+    static JSONObject parseJson() throws JsonHandlerException {
         Path filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
-        URL url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
+
 
         try {
+            URL url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
             JSONObject jsonObject = readJsonData(url);
 //            Files.copy(url.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             return jsonObject;
         } catch (JsonHandlerException e) {
+            log.error(e.getMessage());
             return readJsonData(filePath);
+        } catch (MalformedURLException e) {
+            log.error(e.getMessage());
         }
+        return null;
     }
 
     //open stream for data to read method
@@ -37,16 +41,16 @@ class JsonHandler extends Exception{
         try (InputStream stream = url.openStream()) {
             return readInputDataStream(stream);
         } catch (IOException e) {
-//            log.error(e.getMessage());
-            throw new JsonHandlerException("owo", e);
+            log.error(e.getMessage());
+            throw new JsonHandlerException("URL Exception", e);
         }
     }
     private static JSONObject readJsonData(Path path) throws JsonHandlerException {
         try (InputStream stream = Files.newInputStream(path)) {
             return readInputDataStream(stream);
         } catch (IOException e) {
-//            log.error(e.getMessage());
-            throw new JsonHandlerException("ugh",e);
+            log.error(e.getMessage());
+            throw new JsonHandlerException("File Exception",e);
         }
     }
 

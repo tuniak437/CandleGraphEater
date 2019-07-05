@@ -2,16 +2,14 @@ package cz.tuniak;
 
 import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.internal.chartpart.Chart;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
 import java.time.Month;
-import java.util.HashMap;
-import java.util.TreeMap;
 
 class UIHandler {
-   synchronized static JFrame createFrame() {
+   static JFrame createFrame() {
         //creating and setting up frame
         JFrame frame = new JFrame("Index Graph");
         frame.setLayout(new BorderLayout());
@@ -27,10 +25,8 @@ class UIHandler {
         return frame;
     }
 
-    synchronized static void addDataToFrame(JFrame frame) {
-        //start frame in new thread, downloading data in different thread
-        OHLCChart chart = ChartHandler.createChart();
-        XChartPanel cp = new XChartPanel(ChartHandler.createChart());
+    static void addDataToFrame(JFrame frame) {
+        XChartPanel cp = new XChartPanel<Chart>(ChartHandler.createChart());
         frame.add(cp, BorderLayout.CENTER);
 
         //displaying the window
@@ -38,20 +34,21 @@ class UIHandler {
         frame.setVisible(true);
     }
 
-
-
     // needs adjusting for new ChartData class
-    private static JTabbedPane buildMonthTabs(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+    private static JTabbedPane buildMonthTabs(ChartData data) {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        data.forEach((key, value) -> {
-                    OHLCChart chart = ChartHandler.createChart();
-//                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-
-                    tabbedPane.add(Month.of(key).toString(), new XChartPanel(chart));
-        });
-
+        for(Month month : data.getMonths()) {
+            OHLCChart chart = ChartHandler.createChart();
+            tabbedPane.add(month.toString(), new XChartPanel<Chart>(chart));
+        }
+//        data.forEach((key, value) -> {
+//                    OHLCChart chart = ChartHandler.createChart();
+////                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+//
+//                    tabbedPane.add(Month.of(key).toString(), new XChartPanel<Chart>(chart));
+//        });
         return tabbedPane;
     }
 
@@ -68,8 +65,6 @@ class UIHandler {
         loading.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         loading.setVisible(true);
 
-
         return loading;
     }
-
 }

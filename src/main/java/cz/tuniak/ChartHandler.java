@@ -25,7 +25,7 @@ class ChartHandler{
                 jsonDataObject = JsonHandler.parseJson();
             } catch (IOException e) {
                 UIHandler.showMessage(UIHandler.createFrame(), "Something went wrong.");
-                log.error("ChartHandler.catch", e); // how could log look like
+                log.error("ChartHandler.catch", e);
             }
             ChartData myChartData = new ChartData(jsonDataObject);
             chart.addSeries("Eur/Usd",
