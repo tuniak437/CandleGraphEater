@@ -1,23 +1,36 @@
 package cz.tuniak;
 
-import cz.tuniak.expections.JsonHandlerException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import javax.swing.*;
+import java.net.MalformedURLException;
 
 public class IndexGraph {
 
-//    private static final Logger log = LogManager.getLogger(IndexGraph.class.getName());
+    private static final Logger log = LogManager.getLogger(IndexGraph.class.getName());
 
     public static void main(String[] args) {
 
-//        JFrame jFrame = UIHandler.createFrame();
-//        UIHandler.addDataToFrame(jFrame);
-
         DataHandler myDataHandler = new DataHandler();
+        JFrame jFrame = UIHandler.createFrame();
 
+        JsonHandler jsonHandler = null;
         try {
-            myDataHandler.addNewEntries(JsonHandler.parseJson());
-        } catch (JsonHandlerException e) {
-            e.printStackTrace();
+            jsonHandler = new JsonHandler();
+        } catch (MalformedURLException e) {
+            log.error(e.getMessage());
         }
+        myDataHandler.addNewEntries(jsonHandler.parseJson());
+        UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
+
+
+//        System.out.println(myDataHandler.getDataMap());
+
+
+
+
+
 
 
         // print log into console and .log file

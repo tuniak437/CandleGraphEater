@@ -3,17 +3,17 @@ package cz.tuniak;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class ChartData {
-    private List<LocalDate> day;
+    private List<Date> day;
     private List<Double> open;
     private List<Double> high;
     private List<Double> low;
     private List<Double> close;
-    private boolean isSorted;
 
     public ChartData() {
         this.day = new ArrayList<>();
@@ -23,49 +23,33 @@ public class ChartData {
         this.close = new ArrayList<>();
     }
 
-    public List<LocalDate> getDay() {
-        sortList();
+    public List<Date> getDay() {
+//        sortList();
         return day;
     }
 
     public List<Double> getOpen() {
-        sortList();
         return open;
     }
 
     public List<Double> getHigh() {
-        sortList();
         return high;
     }
 
     public List<Double> getLow() {
-        sortList();
         return low;
     }
 
     public List<Double> getClose() {
-        sortList();
         return close;
     }
 
     void addNewValues(LocalDate date, JSONObject jsonObject) {
-        day.add(date);
+        day.add(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         open.add(jsonObject.getDouble("1. open"));
         high.add(jsonObject.getDouble("2. high"));
         low.add(jsonObject.getDouble("3. low"));
         close.add(jsonObject.getDouble("4. close"));
-        isSorted = false;
-    }
-
-    private void sortList() {
-        if (!isSorted) {
-            Collections.sort(day);
-            Collections.sort(open);
-            Collections.sort(high);
-            Collections.sort(low);
-            Collections.sort(close);
-            isSorted = true;
-        }
     }
 
     @Override

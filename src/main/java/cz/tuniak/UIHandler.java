@@ -1,7 +1,14 @@
 package cz.tuniak;
 
+import org.knowm.xchart.OHLCChart;
+import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.internal.chartpart.Chart;
+
 import javax.swing.*;
 import java.awt.*;
+import java.time.Month;
+import java.util.Map;
+import java.util.TreeMap;
 
 class UIHandler {
    static JFrame createFrame() {
@@ -20,24 +27,26 @@ class UIHandler {
         return frame;
     }
 
-//    static void addDataToFrame(JFrame frame) {
-//        XChartPanel cp = new XChartPanel<Chart>(ChartHandler.createChart());
-//        frame.add(cp, BorderLayout.CENTER);
-//
-//        //displaying the window
-//        frame.pack();
-//        frame.setVisible(true);
-//    }
+    static void addDataToFrame(JFrame frame, Map<Integer, TreeMap<Month, ChartData>> dataMap) {
+        frame.add(buildMonthTabs(dataMap), BorderLayout.CENTER);
 
-    // needs adjusting for new ChartData class
-    private static JTabbedPane buildMonthTabs(ChartData data) {
+        //displaying the window
+        frame.pack();
+        frame.setVisible(true);
+    }
+
+    static JTabbedPane buildMonthTabs(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-//        for(Month month : data.getMonths()) {
-//            OHLCChart chart = ChartHandler.createChart();
-//            tabbedPane.add(month.toString(), new XChartPanel<Chart>(chart));
-//        }
+        // looping through every year in dataMap
+        for(Integer year : dataMap.keySet()) {
+            // looping through every month in a year
+            for (Month month : dataMap.get(year).keySet()) {
+                OHLCChart chart = ChartHandler.createChart(year, month);
+                tabbedPane.add(month.toString() + " " + year, new XChartPanel<Chart>(chart));
+            }
+        }
 //        data.forEach((key, value) -> {
 //                    OHLCChart chart = ChartHandler.createChart();
 ////                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);

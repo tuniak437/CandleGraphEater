@@ -1,6 +1,5 @@
 package cz.tuniak;
 
-import cz.tuniak.expections.JsonHandlerException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
@@ -14,42 +13,48 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 
-class JsonHandler extends Exception{
+class JsonHandler {
     private static final Logger log = LogManager.getLogger(JsonHandler.class);
+    private Path filePath;
+    private URL url;
 
-    static JSONObject parseJson() throws JsonHandlerException {
-        Path filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
+    JsonHandler() throws MalformedURLException{
+        this.filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
+        this.url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
+//        this.url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=demo");
+    }
 
+    JSONObject parseJson() {
         //replace jsonhandler with real exceptions
         // constructor with path and url
         //read from file function on catch Jsonhandler exception
         try {
-            URL url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
             JSONObject jsonObject = readJsonData(url);
-//            Files.copy(url.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(url.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
             return jsonObject;
-        } catch (JsonHandlerException e) {
+        } catch (IOException e) {
             log.error(e.getMessage());
             return readJsonData(filePath);
-        } catch (MalformedURLException e) {
-            log.error(e.getMessage());
         }
-        return null;
     }
 
     //open stream for data to read method
-    private static JSONObject readJsonData(URL url) throws IOException {
+    private static JSONObject readJsonData(URL url) {
         try (InputStream stream = url.openStream()) {
             return readInputDataStream(stream);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            return null;
         }
     }
-    private static JSONObject readJsonData(Path path) throws JsonHandlerException {
+    private static JSONObject readJsonData(Path path) {
         try (InputStream stream = Files.newInputStream(path)) {
             return readInputDataStream(stream);
         } catch (IOException e) {
             log.error(e.getMessage());
-            throw new JsonHandlerException("File Exception",e);
+            return null;
         }
     }
 
