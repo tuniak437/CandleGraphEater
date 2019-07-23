@@ -3,84 +3,103 @@ package cz.tuniak;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
-import java.time.Month;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
+import java.util.List;
 
 public class ChartData {
-    private JSONObject jsonObject;
-
-    public ChartData(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
-    }
+    private List<LocalDate> day;
+    private List<Double> open;
+    private List<Double> high;
+    private List<Double> low;
+    private List<Double> close;
+    private boolean isSorted;
 
     public ChartData() {
+        this.day = new ArrayList<>();
+        this.open = new ArrayList<>();
+        this.high = new ArrayList<>();
+        this.low = new ArrayList<>();
+        this.close = new ArrayList<>();
     }
 
-    private ArrayList<LocalDate> sortDayValues() {
-        ArrayList<LocalDate> sortedDayValues = new ArrayList<>();
-        JSONObject timeSeries = this.jsonObject.getJSONObject("Time Series FX (Daily)");
-        for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
-            String date = it.next();
-            sortedDayValues.add(LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-        }
-        Collections.sort(sortedDayValues);
-        return sortedDayValues;
+    public List<LocalDate> getDay() {
+        sortList();
+        return day;
     }
 
-    public ArrayList<Date> getDays() {
-        ArrayList<LocalDate> sortedDayValues = sortDayValues();
-        ArrayList<Date> days = new ArrayList<>();
-        for (LocalDate day : sortedDayValues) {
-            days.add(Date.from(day.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        }
-
-        return days;
+    public List<Double> getOpen() {
+        sortList();
+        return open;
     }
 
-    public ArrayList<Month> getMonths() {
-        ArrayList<Month> months = new ArrayList<>();
-        for(LocalDate day : sortDayValues()) {
-            if(!months.contains(day.getMonth())) {
-                months.add(day.getMonth());
-            }
-        }
-        return months;
+    public List<Double> getHigh() {
+        sortList();
+        return high;
     }
 
-    public ArrayList<Double> getOpenValues() {
-        ArrayList<Double> openValues = new ArrayList<>();
-        for (LocalDate day : sortDayValues()) {
-            openValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("1. open"));
-        }
-        return openValues;
+    public List<Double> getLow() {
+        sortList();
+        return low;
     }
 
-    ArrayList<Double> getHighValues() {
-        ArrayList<Double> highValues = new ArrayList<>();
-        for (LocalDate day : sortDayValues()) {
-            highValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("2. high"));
-        }
-        return highValues;
+    public List<Double> getClose() {
+        sortList();
+        return close;
     }
 
-    ArrayList<Double> getLowValues() {
-        ArrayList<Double> lowValues = new ArrayList<>();
-        for (LocalDate day : sortDayValues()) {
-            lowValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("3. low"));
-        }
-        return lowValues;
+    void addNewValues(LocalDate date, JSONObject jsonObject) {
+        day.add(date);
+        open.add(jsonObject.getDouble("1. open"));
+        high.add(jsonObject.getDouble("2. high"));
+        low.add(jsonObject.getDouble("3. low"));
+        close.add(jsonObject.getDouble("4. close"));
+        isSorted = false;
     }
 
-    ArrayList<Double> getCloseValues() {
-        ArrayList<Double> closeValues = new ArrayList<>();
-        for (LocalDate day : sortDayValues()) {
-            closeValues.add(this.jsonObject.getJSONObject("Time Series FX (Daily)").getJSONObject(day.toString()).getDouble("4. close"));
+    private void sortList() {
+        if (!isSorted) {
+            Collections.sort(day);
+            Collections.sort(open);
+            Collections.sort(high);
+            Collections.sort(low);
+            Collections.sort(close);
+            isSorted = true;
         }
-        return closeValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ChartData chartData = (ChartData) o;
+
+        if (!day.equals(chartData.day)) return false;
+        if (!open.equals(chartData.open)) return false;
+        if (!high.equals(chartData.high)) return false;
+        if (!low.equals(chartData.low)) return false;
+        return close.equals(chartData.close);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = day.hashCode();
+        result = 31 * result + open.hashCode();
+        result = 31 * result + high.hashCode();
+        result = 31 * result + low.hashCode();
+        result = 31 * result + close.hashCode();
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "ChartData{" +
+                "day=" + day +
+                ", open=" + open +
+                ", high=" + high +
+                ", low=" + low +
+                ", close=" + close +
+                '}';
     }
 }

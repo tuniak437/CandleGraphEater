@@ -21,7 +21,9 @@ class JsonHandler extends Exception{
     static JSONObject parseJson() throws JsonHandlerException {
         Path filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
 
-
+        //replace jsonhandler with real exceptions
+        // constructor with path and url
+        //read from file function on catch Jsonhandler exception
         try {
             URL url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
             JSONObject jsonObject = readJsonData(url);
@@ -37,12 +39,9 @@ class JsonHandler extends Exception{
     }
 
     //open stream for data to read method
-    private static JSONObject readJsonData(URL url) throws JsonHandlerException {
+    private static JSONObject readJsonData(URL url) throws IOException {
         try (InputStream stream = url.openStream()) {
             return readInputDataStream(stream);
-        } catch (IOException e) {
-            log.error(e.getMessage());
-            throw new JsonHandlerException("URL Exception", e);
         }
     }
     private static JSONObject readJsonData(Path path) throws JsonHandlerException {
