@@ -21,11 +21,10 @@ public class IndexGraph {
         } catch (MalformedURLException e) {
             log.error(e.getMessage());
         }
-        myDataHandler.addNewEntries(jsonHandler.parseJson());
+        if (jsonHandler != null) {
+            myDataHandler.addNewEntries(jsonHandler.parseJson());
+        }
         UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
-
-
-//        System.out.println(myDataHandler.getDataMap());
 
 
 

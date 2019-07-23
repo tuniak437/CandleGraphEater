@@ -6,43 +6,56 @@ import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.OHLCSeries;
 import org.knowm.xchart.style.Styler;
 
-import java.awt.*;
-import java.net.MalformedURLException;
 import java.time.Month;
+import java.util.*;
 
 
 class ChartHandler{
 
     private static final Logger log = LogManager.getLogger(ChartHandler.class.getName());
 
-        static OHLCChart createChart(Integer year, Month month) {
+        static OHLCChart createChart(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
             final OHLCChart chart = new OHLCChart(800, 600);
             chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
             chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
 
-            
-            DataHandler myDataHandler = new DataHandler();
+            List<Date> days = new ArrayList<>();
+            List<Double> open = new ArrayList<>();
+            List<Double> high = new ArrayList<>();
+            List<Double> low = new ArrayList<>();
+            List<Double> close = new ArrayList<>();
 
-            JsonHandler jsonHandler = null;
-            try {
-                jsonHandler = new JsonHandler();
-            } catch (MalformedURLException e) {
-                log.error(e.getMessage());
+            for (Integer year : dataMap.keySet()) {
+                for (Month month : dataMap.get(year).keySet()) {
+                    days.addAll(dataMap.get(year).get(month).getDay());
+                    open.addAll(dataMap.get(year).get(month).getOpen());
+                    high.addAll(dataMap.get(year).get(month).getHigh());
+                    low.addAll(dataMap.get(year).get(month).getLow());
+                    close.addAll(dataMap.get(year).get(month).getClose());
+                }
             }
+            chart.addSeries("Eur/Usd",
+                    days,
+                    open,
+                    high,
+                    low,
+                    close
+            );
+            return chart;
+        }
 
-            myDataHandler.addNewEntries(jsonHandler.parseJson());
+        static OHLCChart createChart(ChartData chartData) {
+            final OHLCChart chart = new OHLCChart(800, 600);
+            chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
+            chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
 
-            ChartData chartData = myDataHandler.getDataMap().get(year).get(month);
             chart.addSeries("Eur/Usd",
                 chartData.getDay(),
                 chartData.getOpen(),
                 chartData.getHigh(),
                 chartData.getLow(),
                 chartData.getClose()
-        )
-                .setUpColor(Color.GREEN)
-                .setDownColor(Color.RED)
-        ;
+        );
         return chart;
         }
 }

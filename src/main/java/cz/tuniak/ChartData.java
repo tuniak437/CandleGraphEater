@@ -23,24 +23,23 @@ public class ChartData {
         this.close = new ArrayList<>();
     }
 
-    public List<Date> getDay() {
-//        sortList();
+    List<Date> getDay() {
         return day;
     }
 
-    public List<Double> getOpen() {
+    List<Double> getOpen() {
         return open;
     }
 
-    public List<Double> getHigh() {
+    List<Double> getHigh() {
         return high;
     }
 
-    public List<Double> getLow() {
+    List<Double> getLow() {
         return low;
     }
 
-    public List<Double> getClose() {
+    List<Double> getClose() {
         return close;
     }
 

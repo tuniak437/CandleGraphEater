@@ -13,7 +13,7 @@ import java.util.TreeMap;
 class UIHandler {
    static JFrame createFrame() {
         //creating and setting up frame
-        JFrame frame = new JFrame("Index Graph");
+        JFrame frame = new JFrame("Candle Graph");
         frame.setLayout(new BorderLayout());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -35,24 +35,24 @@ class UIHandler {
         frame.setVisible(true);
     }
 
-    static JTabbedPane buildMonthTabs(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
+    private static JTabbedPane buildMonthTabs(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+        // getting dataMap to create candle chart with every month
+        OHLCChart wholeChart = ChartHandler.createChart(dataMap);
+        tabbedPane.add("SHOW ALL", new XChartPanel<>(wholeChart));
         // looping through every year in dataMap
         for(Integer year : dataMap.keySet()) {
             // looping through every month in a year
             for (Month month : dataMap.get(year).keySet()) {
-                OHLCChart chart = ChartHandler.createChart(year, month);
+                // getting ChartData of exact month to create candle chart
+                OHLCChart chart = ChartHandler.createChart(dataMap.get(year).get(month));
                 tabbedPane.add(month.toString() + " " + year, new XChartPanel<Chart>(chart));
             }
         }
-//        data.forEach((key, value) -> {
-//                    OHLCChart chart = ChartHandler.createChart();
-////                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-//
-//                    tabbedPane.add(Month.of(key).toString(), new XChartPanel<Chart>(chart));
-//        });
+
         return tabbedPane;
     }
 

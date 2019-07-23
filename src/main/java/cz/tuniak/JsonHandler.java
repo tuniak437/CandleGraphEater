@@ -20,10 +20,9 @@ class JsonHandler {
     private Path filePath;
     private URL url;
 
-    JsonHandler() throws MalformedURLException{
+    JsonHandler() throws MalformedURLException {
         this.filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
         this.url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
-//        this.url = new URL("https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&outputsize=full&apikey=demo");
     }
 
     JSONObject parseJson() {
