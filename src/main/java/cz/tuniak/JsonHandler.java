@@ -20,15 +20,28 @@ class JsonHandler {
     private Path filePath;
     private URL url;
 
-    JsonHandler() throws MalformedURLException {
-        this.filePath = Paths.get("C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json");
-        this.url = new URL("https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
+    JsonHandler(String filePath, String url) throws MalformedURLException {
+        this.filePath = Paths.get(filePath);
+        this.url = new URL(url);
     }
 
+    // an alternative on how to deal with MalformedURLException
+//    JsonHandler(String filePath, String url) {
+//        this.filePath = Paths.get(filePath);
+//        try {
+//            this.url = new URL(url);
+//        } catch (MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    /**
+     * Method tries to read data from URL page. If it is successful, data
+     * is stored is .json file. In case there is a problem with Internet
+     * connection this file is used to create chart instead.
+     * @return The JSONObject.
+     */
     JSONObject parseJson() {
-        //replace jsonhandler with real exceptions
-        // constructor with path and url
-        //read from file function on catch Jsonhandler exception
         try {
             JSONObject jsonObject = readJsonData(url);
             Files.copy(url.openStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
@@ -39,7 +52,11 @@ class JsonHandler {
         }
     }
 
-    //open stream for data to read method
+    /**
+     * Reading JSON data using InputStream to get data from URL page.
+     * @param url URL page containing graph data in JSON format.
+     * @return The JSONObject.
+     */
     private static JSONObject readJsonData(URL url) {
         try (InputStream stream = url.openStream()) {
             return readInputDataStream(stream);
@@ -48,6 +65,12 @@ class JsonHandler {
             return null;
         }
     }
+
+    /**
+     * Reading JSON data from file using InputStream.
+     * @param path Path to directory where .json file is located.
+     * @return The JSONObject.
+     */
     private static JSONObject readJsonData(Path path) {
         try (InputStream stream = Files.newInputStream(path)) {
             return readInputDataStream(stream);

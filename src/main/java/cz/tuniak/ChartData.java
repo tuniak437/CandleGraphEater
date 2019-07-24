@@ -43,6 +43,11 @@ public class ChartData {
         return close;
     }
 
+    /**
+     * Adding Double value to each class list parameter from certain day.
+     * @param date LocalDate parameter in "yyyy-MM-dd" pattern.
+     * @param jsonObject JSONObject parameter containing values for each list.
+     */
     void addNewValues(LocalDate date, JSONObject jsonObject) {
         day.add(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()));
         open.add(jsonObject.getDouble("1. open"));

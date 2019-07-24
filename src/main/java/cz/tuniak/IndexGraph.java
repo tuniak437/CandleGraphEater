@@ -17,7 +17,9 @@ public class IndexGraph {
 
         JsonHandler jsonHandler = null;
         try {
-            jsonHandler = new JsonHandler();
+            jsonHandler = new JsonHandler(
+                    "C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json",
+                    "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
         } catch (MalformedURLException e) {
             log.error(e.getMessage());
         }
@@ -25,12 +27,6 @@ public class IndexGraph {
             myDataHandler.addNewEntries(jsonHandler.parseJson());
         }
         UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
-
-
-
-
-
-
 
         // print log into console and .log file
         // configure .properties so it makes sense
