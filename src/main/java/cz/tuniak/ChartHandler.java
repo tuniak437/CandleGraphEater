@@ -6,56 +6,65 @@ import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.OHLCSeries;
 import org.knowm.xchart.style.Styler;
 
-import java.time.Month;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+class ChartHandler {
 
-class ChartHandler{
+  private static final Logger log = LogManager.getLogger(ChartHandler.class.getName());
 
-    private static final Logger log = LogManager.getLogger(ChartHandler.class.getName());
+  // create chart method returns chart with 5 arguments
+  // getMonthChart gets chart data (1 month) appends lists
+  // on object, call create chart and return it
+  // get whole chart gets all months and creates chart from it
+  private List<Date> day;
+  private List<Double> open;
+  private List<Double> high;
+  private List<Double> low;
+  private List<Double> close;
 
-        static OHLCChart createChart(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
-            final OHLCChart chart = new OHLCChart(800, 600);
-            chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
-            chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
+  ChartHandler() {
+    this.day = new ArrayList<>();
+    this.open = new ArrayList<>();
+    this.high = new ArrayList<>();
+    this.low = new ArrayList<>();
+    this.close = new ArrayList<>();
+  }
 
-            List<Date> days = new ArrayList<>();
-            List<Double> open = new ArrayList<>();
-            List<Double> high = new ArrayList<>();
-            List<Double> low = new ArrayList<>();
-            List<Double> close = new ArrayList<>();
+  OHLCChart getMonthChart(ChartData chartData) {
+    appendData(chartData);
+    return createChartXOXO(
+        chartData.getDay(),
+        chartData.getOpen(),
+        chartData.getHigh(),
+        chartData.getLow(),
+        chartData.getClose());
+  }
 
-            for (Integer year : dataMap.keySet()) {
-                for (Month month : dataMap.get(year).keySet()) {
-                    days.addAll(dataMap.get(year).get(month).getDay());
-                    open.addAll(dataMap.get(year).get(month).getOpen());
-                    high.addAll(dataMap.get(year).get(month).getHigh());
-                    low.addAll(dataMap.get(year).get(month).getLow());
-                    close.addAll(dataMap.get(year).get(month).getClose());
-                }
-            }
-            chart.addSeries("Eur/Usd",
-                    days,
-                    open,
-                    high,
-                    low,
-                    close
-            );
-            return chart;
-        }
+  private void appendData(ChartData chartData) {
+    day.addAll(chartData.getDay());
+    open.addAll(chartData.getOpen());
+    high.addAll(chartData.getHigh());
+    low.addAll(chartData.getLow());
+    close.addAll(chartData.getClose());
+  }
 
-        static OHLCChart createChart(ChartData chartData) {
-            final OHLCChart chart = new OHLCChart(800, 600);
-            chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
-            chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
+  OHLCChart getWholeChart() {
+    return createChartXOXO(day, open, high, low, close);
+  }
 
-            chart.addSeries("Eur/Usd",
-                chartData.getDay(),
-                chartData.getOpen(),
-                chartData.getHigh(),
-                chartData.getLow(),
-                chartData.getClose()
-        );
-        return chart;
-        }
+  private OHLCChart createChartXOXO(
+      List<Date> day,
+      List<Double> open,
+      List<Double> high,
+      List<Double> low,
+      List<Double> close) {
+    final OHLCChart chart = new OHLCChart(800, 600);
+    chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
+    chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
+
+    chart.addSeries("Eur/Usd", day, open, high, low, close);
+    return chart;
+  }
 }
