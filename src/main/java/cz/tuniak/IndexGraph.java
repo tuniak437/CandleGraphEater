@@ -1,35 +1,41 @@
 package cz.tuniak;
 
-import org.json.JSONObject;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.TreeMap;
+import javax.swing.*;
 
 public class IndexGraph {
 
-    public static void main(String[] args) throws Exception{
-        JSONObject jsonDataObject = JsonHandler.parseJson();
-        HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data = loadData(jsonDataObject);
-        UIHandler.createFrame(data);
+  private static final Logger log = LogManager.getLogger(IndexGraph.class.getName());
 
-    }
+  public static void main(String[] args) {
+    DataHandler myDataHandler = new DataHandler();
+    JFrame jFrame = UIHandler.createFrame();
 
-    public static HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> loadData(JSONObject jsonDataObject) {
-        //creates new instance of DataHandler
-        DataHandler myHandler = new DataHandler();
-        //gets variable JSONObject timeSeries
-        JSONObject timeSeries = jsonDataObject.getJSONObject("Time Series FX (Daily)");
-        //iterates through the whole file taking keys of timeSeries object saving it in a String date variable
-        for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
-            String date = it.next();
+    JsonHandler jsonHandler =
+        new JsonHandler(
+            "C:\\Users\\Tuna-NB\\IdeaProjects\\index-graph-eater\\src\\main\\java\\cz\\tuniak\\query.json",
+            "https://www.alphavantage.co/query?function=FX_DAILY&from_symbol=EUR&to_symbol=USD&apikey=demo");
 
-            //uses String date variable to get open, high, low, close values from JSONObject timeSeries
-            myHandler.addNewEntry(date, timeSeries.getJSONObject(date));
-        }
-        //returns HashMap with every value from selected month
-        return myHandler.months;
-    }
+    // if parse json is null create window with message
+    // else run the program
+    myDataHandler.parseNewData(jsonHandler.parseJson());
+    UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
 
+    // print log into console and .log file
+    // configure .properties so it makes sense
+    //        log.debug("Debug message");
+    //        log.info("Info log");
+    //        log.error("Error message");
+
+    //        Thread.setDefaultUncaughtExceptionHandler(new ExceptionHandler());
+    //        Thread windowThread = new Thread(() ->
+    //                 UIHandler.loadingSign());
+    //                UIHandler.showMessage(UIHandler.createFrame(), "Loading...");
+    //                JFrame load = UIHandler.loadingSign();
+    //
+    //        windowThread.start();
+    // create log file with exception messages
+  }
 }

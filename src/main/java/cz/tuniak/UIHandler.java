@@ -2,87 +2,76 @@ package cz.tuniak;
 
 import org.knowm.xchart.OHLCChart;
 import org.knowm.xchart.XChartPanel;
+import org.knowm.xchart.internal.chartpart.Chart;
 
 import javax.swing.*;
 import java.awt.*;
-import java.time.LocalDate;
-import java.util.HashMap;
+import java.time.Month;
+import java.util.Map;
 import java.util.TreeMap;
 
 class UIHandler {
-    static JFrame createFrame(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+  static JFrame createFrame() {
+    // creating and setting up frame
+    JFrame frame = new JFrame("Candle Graph");
+    frame.setLayout(new BorderLayout());
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        //creating and setting up window
-        JFrame frame = new JFrame("Index Graph");
-        frame.setLayout(new BorderLayout());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    // labeling window
+    JLabel label = new JLabel("My fancy graph", SwingConstants.CENTER);
+    frame.add(label, BorderLayout.NORTH);
 
-        //labeling window
-        JLabel label = new JLabel("My super fancy graph", SwingConstants.CENTER);
-        frame.add(label, BorderLayout.NORTH);
+    frame.setSize(1200, 800);
+    frame.setVisible(true);
 
-        frame.add(buildMonthTabs(data), BorderLayout.CENTER);
+    return frame;
+  }
 
-        frame.setPreferredSize(new Dimension(1200, 800));
+  static void addDataToFrame(JFrame frame, Map<Integer, TreeMap<Month, ChartData>> dataMap) {
+    frame.add(buildTabs(dataMap), BorderLayout.CENTER);
 
-        //displaying the window
-        frame.pack();
-        frame.setVisible(true);
+    // displaying the window
+    frame.pack();
+    frame.setVisible(true);
+  }
 
-        return frame;
+  private static JTabbedPane buildTabs(Map<Integer, TreeMap<Month, ChartData>> dataMap) {
+
+    JTabbedPane tabbedPane = new JTabbedPane();
+    tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
+
+    ChartHandler myChartHandler = new ChartHandler();
+    // getting dataMap to create candle chart with every month
+    // looping through every year in dataMap
+    for (Integer year : dataMap.keySet()) {
+      // looping through every month in a year
+      for (Month month : dataMap.get(year).keySet()) {
+        // getting ChartData of exact month and year to create candle chart
+        OHLCChart chart = myChartHandler.getMonthChart(dataMap.get(year).get(month));
+        tabbedPane.add(month.toString() + " " + year, new XChartPanel<Chart>(chart));
+      }
     }
 
-    static JTabbedPane buildMonthTabs(HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> data) {
+    Component wholeChart = new XChartPanel<>(myChartHandler.getWholeChart());
+    wholeChart.setName("Whole Chart");
+    tabbedPane.add(wholeChart, 0);
 
-        JTabbedPane tabbedPane = new JTabbedPane();
-        tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-        data.forEach((key, value) -> {
-                    OHLCChart chart = ChartHandler.createChart(value);
-//                    String month = value.get("open").firstKey().getMonth().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
-                    tabbedPane.add(Month.getNameOfMonth(key), new XChartPanel(chart));
-        });
+    return tabbedPane;
+  }
 
-        return tabbedPane;
-    }
-    static JPanel createChart(JFrame frame, OHLCChart chart) {
+  static void showMessage(JFrame frame, String message) {
+    JOptionPane.showMessageDialog(frame, message);
+  }
 
-        //adding chart into window
-        JPanel chartPanel = new XChartPanel<>(chart);
-        frame.add(chartPanel, BorderLayout.CENTER);
+  // needs work
+  static JFrame loadingSign() {
+    JFrame loading = new JFrame();
+    loading.setLayout(new BorderLayout());
+    loading.add(new TextArea("Loading..."), BorderLayout.CENTER);
+    loading.setSize(300, 300);
+    loading.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+    loading.setVisible(true);
 
-        return chartPanel;
-    }
-
-    private enum Month {
-        JANUARY(1, "JANUARY"),
-        FEBRUARY(2, "FEBRUARY"),
-        MARCH(3, "MARCH"),
-        APRIL(4, "APRIL"),
-        MAY(5, "MAY"),
-        JUNE(6, "JUNE"),
-        JULY(7, "JULY"),
-        AUGUST(8, "AUGUST"),
-        SEPTEMBER(9, "SEPTEMBER"),
-        OCTOBER(10, "OCTOBER"),
-        NOVEMBER(11, "NOVEMBER"),
-        DECEMBER(12, "DECEMBER");
-
-        private final int numberOfMonth;
-        private final String nameOfMonth;
-
-        Month(int numberOfMonth, String nameOfMonth) {
-            this.numberOfMonth = numberOfMonth;
-            this.nameOfMonth = nameOfMonth;
-        }
-
-        public static String getNameOfMonth(int numberOfMonth) {
-            for (Month month: Month.values()) {
-
-                if (month.numberOfMonth == numberOfMonth) {
-                    return month.nameOfMonth;
-                }
-            }
-            throw new IllegalArgumentException("Month with number " + numberOfMonth + " does not exist.");
-        }
-    }
+    return loading;
+  }
 }

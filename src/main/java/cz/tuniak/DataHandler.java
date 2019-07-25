@@ -1,47 +1,59 @@
 package cz.tuniak;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.JSONObject;
 
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 class DataHandler {
-    //Integer = number of month || String = (open, high, low, close)
-    //LocalDate = full date in format "yyyy-MM-dd" || Double = values
-    HashMap<Integer, HashMap<String, TreeMap<LocalDate, Double>>> months = new HashMap<>();
+  private static final Logger log = LogManager.getLogger(JsonHandler.class);
 
-    /**
-     * Iterates one time and adds new entry to every TreeMap.
-     *
-     * @param date       String representation of date. Always in format `YYYY-MM-DD`.
-     * @param jsonCandle Double representation of candle values(open, high, low, close).
-     */
-    public void addNewEntry(String date, JSONObject jsonCandle) {
-        //creates LocalDate variable from String date in format "yyyy-MM-dd"
-        LocalDate parsedDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+  private Map<Integer, TreeMap<Month, ChartData>> dataMap = new HashMap<>();
 
-        //adds another values to HashMap months if HashMap already has a number of month in it
-        if (this.months.containsKey(parsedDate.getMonthValue())) {
-            this.months.get(parsedDate.getMonthValue()).get("open").put(parsedDate, jsonCandle.getDouble("1. open"));
-            this.months.get(parsedDate.getMonthValue()).get("high").put(parsedDate, jsonCandle.getDouble("2. high"));
-            this.months.get(parsedDate.getMonthValue()).get("low").put(parsedDate, jsonCandle.getDouble("3. low"));
-            this.months.get(parsedDate.getMonthValue()).get("close").put(parsedDate, jsonCandle.getDouble("4. close"));
-        } else {
-            //else it creates a new inner HashMap to put values in
-            //uses TreeMap for LocalDate to sort it
-            HashMap<String, TreeMap<LocalDate, Double>> candles = new HashMap<>();
+  void parseNewData(JSONObject jsonObject) {
+    JSONObject timeSeries = jsonObject.getJSONObject("Time Series FX (Daily)");
+    // using ArrayList dateValue to store and sort String values parsed from iterator
+    ArrayList<String> dateValues = new ArrayList<>();
 
-            candles.put("open", new TreeMap<>(Map.of(parsedDate, jsonCandle.getDouble("1. open"))));
-            candles.put("high", new TreeMap<>(Map.of(parsedDate, jsonCandle.getDouble("2. high"))));
-            candles.put("low", new TreeMap<>(Map.of(parsedDate, jsonCandle.getDouble("3. low"))));
-            candles.put("close", new TreeMap<>(Map.of(parsedDate, jsonCandle.getDouble("4. close"))));
-
-            //puts this iteration into HashMap months
-            this.months.put(parsedDate.getMonthValue(), candles);
-        }
+    for (Iterator<String> it = timeSeries.keys(); it.hasNext(); ) {
+      String date = it.next();
+      dateValues.add(date);
+    }
+    // sorting dateValues to prevent shuffled days in chart
+    Collections.sort(dateValues);
+    for (String date : dateValues) {
+      LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+      getChartData(localDate).addNewValues(localDate, timeSeries.getJSONObject(date));
     }
 
+    // add debug log
+  }
+
+  /**
+   * Obtains Integer year from date parameter, if Map<Integer, TreeMap<Month, ChartData>> dataMap
+   * doesn't already contains that Integer, it creates new year key from it with empty value.
+   *
+   * <p>Obtains Month enum month from date parameter, if TreeMap<Month, ChartData> months doesn't
+   * already contains that Month month, it creates new month key from it with empty value.
+   *
+   * @param date year-month-day object in "yyyy-MM-dd" pattern.
+   * @return Empty ChartData from exact Integer year key and Month month key from parameter which is
+   *     later filled with corresponding data in ChartData class.
+   */
+  // creates Java object with JSON
+  // converts JSON to Java objects
+  private ChartData getChartData(LocalDate date) {
+    TreeMap<Month, ChartData> months =
+        dataMap.computeIfAbsent(date.getYear(), (x) -> new TreeMap<>());
+
+    return months.computeIfAbsent(date.getMonth(), (x) -> new ChartData());
+  }
+
+  Map<Integer, TreeMap<Month, ChartData>> getDataMap() {
+    return dataMap;
+  }
 }
