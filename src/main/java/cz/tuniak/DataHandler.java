@@ -29,8 +29,6 @@ class DataHandler {
       LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
       getChartData(localDate).addNewValues(localDate, timeSeries.getJSONObject(date));
     }
-
-    // add debug log
   }
 
   /**

@@ -6,6 +6,8 @@ import org.knowm.xchart.internal.chartpart.Chart;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.Month;
 import java.util.Map;
 import java.util.TreeMap;
@@ -17,12 +19,13 @@ class UIHandler {
     frame.setLayout(new BorderLayout());
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-    // labeling window
-    JLabel label = new JLabel("My fancy graph", SwingConstants.CENTER);
-    frame.add(label, BorderLayout.NORTH);
+//    JLabel loadingLabel =
+//        showMessage(frame, "Loading..");
+    //    frame.add(loadingLabel, BorderLayout.NORTH);
 
-    frame.setSize(1200, 800);
+    frame.setSize(1000, 600);
     frame.setVisible(true);
+    //    frame.remove(loadingLabel);
 
     return frame;
   }
@@ -59,19 +62,30 @@ class UIHandler {
     return tabbedPane;
   }
 
-  static void showMessage(JFrame frame, String message) {
-    JOptionPane.showMessageDialog(frame, message);
-  }
+  static void showMessage(JFrame jFrame, String message) {
+    final JLabel label = new JLabel();
+    int timerDelay = 1000;
+    new Timer(
+        timerDelay,
+        new ActionListener() {
+          int timeLeft = 2;
 
-  // needs work
-  static JFrame loadingSign() {
-    JFrame loading = new JFrame();
-    loading.setLayout(new BorderLayout());
-    loading.add(new TextArea("Loading..."), BorderLayout.CENTER);
-    loading.setSize(300, 300);
-    loading.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-    loading.setVisible(true);
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            if (timeLeft > 0) {
+              label.setText(message);
+              timeLeft--;
+            } else {
+              ((Timer) e.getSource()).stop();
+              SwingUtilities.getWindowAncestor(label).setVisible(false);
+            }
+          }
+        }) {
+      {
+        setInitialDelay(0);
+      }
+    }.start();
 
-    return loading;
+    JOptionPane.showMessageDialog(jFrame, label);
   }
 }

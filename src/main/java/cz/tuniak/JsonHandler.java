@@ -20,12 +20,12 @@ class JsonHandler {
   private Path filePath;
   private URL url;
 
+  // an alternative on how to deal with MalformedURLException
   //  JsonHandler(String filePath, String url) throws MalformedURLException {
   //    this.filePath = Paths.get(filePath);
   //    this.url = new URL(url);
   //  }
 
-  // an alternative on how to deal with MalformedURLException
   JsonHandler(String filePath, String url) {
     this.filePath = Paths.get(filePath);
     try {

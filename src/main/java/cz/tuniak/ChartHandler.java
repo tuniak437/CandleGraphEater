@@ -34,7 +34,7 @@ class ChartHandler {
 
   OHLCChart getMonthChart(ChartData chartData) {
     appendData(chartData);
-    return createChartXOXO(
+    return createChart(
         chartData.getDay(),
         chartData.getOpen(),
         chartData.getHigh(),
@@ -51,16 +51,16 @@ class ChartHandler {
   }
 
   OHLCChart getWholeChart() {
-    return createChartXOXO(day, open, high, low, close);
+    return createChart(day, open, high, low, close);
   }
 
-  private OHLCChart createChartXOXO(
+  private OHLCChart createChart(
       List<Date> day,
       List<Double> open,
       List<Double> high,
       List<Double> low,
       List<Double> close) {
-    final OHLCChart chart = new OHLCChart(800, 600);
+    final OHLCChart chart = new OHLCChart(1000, 600);
     chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideSE);
     chart.getStyler().setDefaultSeriesRenderStyle(OHLCSeries.OHLCSeriesRenderStyle.Candle);
 

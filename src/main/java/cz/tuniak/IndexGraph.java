@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
+import java.awt.event.WindowEvent;
 
 public class IndexGraph {
 
@@ -20,9 +21,13 @@ public class IndexGraph {
 
     // if parse json is null create window with message
     // else run the program
-    myDataHandler.parseNewData(jsonHandler.parseJson());
-    UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
-
+    if (jsonHandler.parseJson() == null) {
+      UIHandler.showMessage(jFrame,"Failed to create chart");
+      jFrame.dispatchEvent(new WindowEvent(jFrame, WindowEvent.WINDOW_CLOSING));
+    } else {
+      myDataHandler.parseNewData(jsonHandler.parseJson());
+      UIHandler.addDataToFrame(jFrame, myDataHandler.getDataMap());
+    }
     // print log into console and .log file
     // configure .properties so it makes sense
     //        log.debug("Debug message");
@@ -36,6 +41,5 @@ public class IndexGraph {
     //                JFrame load = UIHandler.loadingSign();
     //
     //        windowThread.start();
-    // create log file with exception messages
   }
 }
