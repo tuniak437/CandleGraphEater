@@ -36,7 +36,7 @@ class JsonHandler {
   }
 
   /**
-   * Method tries to read data from URL page. If it is successful, data is stored is .json file. In
+   * Method tries to read data from URL page. If it is successful, data is stored in .json file. In
    * case there is a problem with Internet connection this file is used to create chart instead.
    *
    * @return The JSONObject.
